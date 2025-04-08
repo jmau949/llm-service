@@ -1,18 +1,4 @@
-# Create health check file
-RUN echo '#!/bin/sh\ngrpcurl -plaintext localhost:$PORT list llm.LLMService 2>/dev/null || exit 1' > /healthcheck.sh && \
-    chmod +x /healthcheck.sh
-
-# Expose gRPC port
-EXPOSE $PORT
-
-# Health check using grpcurl
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD /healthcheck.sh
-
-# Set Python path
-ENV PYTHONPATH="/app:${PYTHONPATH}"
-
-# Run the service
-CMD ["python", "-m", "llm_service.main"]# Build stage
+# Build stage
 FROM python:3.10-slim AS builder
 
 # Set environment variables
@@ -79,3 +65,19 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL "https://github.com/fullstorydev/grpcurl/releases/download/v1.8.7/grpcurl_1.8.7_linux_x86_64.tar.gz" | tar -xz -C /usr/local/bin grpcurl
+
+# Create health check file
+RUN echo '#!/bin/sh\ngrpcurl -plaintext localhost:$PORT list llm.LLMService 2>/dev/null || exit 1' > /healthcheck.sh && \
+    chmod +x /healthcheck.sh
+
+# Expose gRPC port
+EXPOSE $PORT
+
+# Health check using grpcurl
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD /healthcheck.sh
+
+# Set Python path
+ENV PYTHONPATH="/app:${PYTHONPATH}"
+
+# Run the service
+CMD ["python", "-m", "llm_service.main"]
