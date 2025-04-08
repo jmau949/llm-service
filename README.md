@@ -76,17 +76,17 @@ poetry install
 # Generate Protocol Buffer code
 poetry run python scripts/generate_proto.py
 ```
-
-## Running the Service
-
-### Local Development
+### Running the Service
 
 ```bash
 # Run with default configuration
-poetry run llm-service
+poetry run python -m llm_service.main
 
-# Or with custom configuration
-MODEL_NAME=llama2 OLLAMA_URL=http://localhost:11434 poetry run llm-service
+# Or specify a model (recommended)
+MODEL_NAME="deepseek-r1:1.5b" poetry run python -m llm_service.main
+
+# Set multiple configuration options
+MODEL_NAME="deepseek-r1:1.5b" OLLAMA_URL="http://localhost:11434" PORT=50051 poetry run python -m llm_service.main
 ```
 
 ### Configuration Options
@@ -122,11 +122,15 @@ poetry run pytest tests/test_service.py
 docker build -t llm-service:latest .
 ```
 
-### Run
+### Docker
 
 ```bash
+# Build the image
+docker build -t llm-service:latest .
+
+# Run with the specified model
 docker run -p 50051:50051 \
-  -e MODEL_NAME="llama2" \
+  -e MODEL_NAME="deepseek-r1:1.5b" \
   -e OLLAMA_URL="http://host.docker.internal:11434" \
   llm-service:latest
 ```
@@ -141,7 +145,7 @@ docker run -p 50051:50051 \
 | `poetry shell` | Activate the virtual environment |
 | `poetry build` | Build the package |
 
-## Example Client Code
+### Example Client Code
 
 Here's a simple Python client to test the service:
 
@@ -171,6 +175,13 @@ try:
             print("\nGeneration complete!")
 except grpc.RpcError as e:
     print(f"RPC error: {e.code()}: {e.details()}")
+```
+
+Or use the provided example client:
+
+```bash
+# Run the example client
+MODEL_NAME="deepseek-r1:1.5b" poetry run python examples/client.py --stream
 ```
 
 ## License
