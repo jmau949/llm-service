@@ -24,7 +24,7 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry config virtualenvs.create false
 
 # Install dependencies
-RUN poetry install --no-dev --no-interaction --no-ansi
+RUN poetry install --without dev --no-root --no-interaction --no-ansi
 
 # Copy proto files and generate Python code
 COPY proto/ proto/
@@ -77,7 +77,7 @@ EXPOSE $PORT
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD /healthcheck.sh
 
 # Set Python path
-ENV PYTHONPATH="/app:${PYTHONPATH}"
+ENV PYTHONPATH=/app
 
 # Run the service
 CMD ["python", "-m", "llm_service.main"]

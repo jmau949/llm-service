@@ -124,7 +124,7 @@ llm-service/
 
 - Python 3.8+ installed
 - Poetry installed
-- Ollama installed and running with a language model (e.g., deepseek-r1:latest)
+- Ollama installed and running with a language model (e.g., deepseek-r1:1.5b)
 
 ### 2. Setup
 
@@ -144,12 +144,12 @@ poetry run python scripts/generate_proto.py
 
 #### On Linux/Mac:
 ```bash
-MODEL_NAME="deepseek-r1:latest" poetry run python -m llm_service.main
+MODEL_NAME="deepseek-r1:1.5b" poetry run python -m llm_service.main
 ```
 
 #### On Windows (PowerShell):
 ```powershell
-$env:MODEL_NAME = "deepseek-r1:latest"
+$env:MODEL_NAME = "deepseek-r1:1.5b"
 poetry run python -m llm_service.main
 ```
 
@@ -157,7 +157,7 @@ You should see output like:
 ```
 2025-04-07 XX:XX:XX,XXX - llm_service - INFO - Logging initialized with level=INFO
 2025-04-07 XX:XX:XX,XXX - llm_service - INFO - Starting LLM Service
-2025-04-07 XX:XX:XX,XXX - llm_service - INFO - Configuration: port=50051, workers=10, ollama_url=http://localhost:11434, model=deepseek-r1:latest
+2025-04-07 XX:XX:XX,XXX - llm_service - INFO - Configuration: port=50051, workers=10, ollama_url=http://localhost:11434, model=deepseek-r1:1.5b
 2025-04-07 XX:XX:XX,XXX - llm_service - INFO - Server started, listening on port 50051
 ```
 
@@ -233,10 +233,7 @@ docker build -t llm-service:latest .
 docker build -t llm-service:latest .
 
 # Run with the specified model
-docker run -p 50051:50051 \
-  -e MODEL_NAME="deepseek-r1:1.5b" \
-  -e OLLAMA_URL="http://host.docker.internal:11434" \
-  llm-service:latest
+docker run -p 50051:50051 -e MODEL_NAME="deepseek-r1:1.5b" -e OLLAMA_URL="http://host.docker.internal:11434" llm-service:latest
 ```
 
 ## Development Commands
